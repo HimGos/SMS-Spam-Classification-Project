@@ -9,7 +9,8 @@ class DataIngestionArtifact:
 
 
 @dataclass
-class DataValidationArtifact: ...
+class DataValidationArtifact:
+    report_file_path: str
 
 
 @dataclass

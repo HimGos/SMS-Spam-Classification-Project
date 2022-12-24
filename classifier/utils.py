@@ -4,6 +4,7 @@ from classifier.logger import logging
 from classifier.config import mongo_client
 import os
 import sys
+import yaml
 
 
 def get_collection_as_df(database_name:str, collection_name:str) -> pd.DataFrame:
@@ -28,6 +29,15 @@ def get_collection_as_df(database_name:str, collection_name:str) -> pd.DataFrame
     except Exception as e:
         raise SpamException(e, sys)
 
+
+def write_yaml_file(file_path, data: dict):
+    try:
+        file_dir = os.path.dirname(file_path)
+        os.makedirs(file_dir, exist_ok=True)
+        with open(file_path, "w") as file_writer:
+            yaml.dump(data, file_writer)
+    except Exception as e:
+        raise SpamException(e, sys)
 
 def preprocessing_input_text():
     pass

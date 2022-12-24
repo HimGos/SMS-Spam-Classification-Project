@@ -8,11 +8,13 @@ from typing import Optional
 import pandas as pd
 import numpy as np
 import os, sys
+import string
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 nltk.download('stopwords')
 
+porter_stemmer = PorterStemmer()
 
 class DataTransformation:
 
@@ -25,9 +27,27 @@ class DataTransformation:
         except Exception as e:
             raise SpamException(e, sys)
 
-    @classmethod
-    def transform_text(cls):
-        pass
+    def transform_text(self, text: str) -> str:
+        try:
+
+            text = text.lower()
+            text = nltk.word_tokenize(text)
+            corpus = []
+            for word in text:
+                if word.isalnum():
+                    corpus.append(word)
+            text = corpus[:]
+            corpus.clear()
+            for word in text:
+                if word not in stopwords.words('english') and word not in string.punctuation:
+                    corpus.append(word)
+            text = corpus[:]
+            corpus.clear()
+            for word in text:
+                corpus.append(porter_stemmer.stem(word))
+            return " ".join(corpus)
+        except Exception as e:
+            raise SpamException(e, sys)
 
     def initiate_data_transformation(self) -> artifact_entity.DataTransformationArtifact:
         try:
@@ -50,10 +70,39 @@ class DataTransformation:
             label_encoder = LabelEncoder()
             label_encoder.fit(target_feature_train_df)
 
-            # Transformation on target columns
+            # Transformation on target column
             target_feature_train_arr = label_encoder.transform(target_feature_train_df)
             target_feature_test_arr = label_encoder.transform(target_feature_test_df)
 
+            # Transformation on input column
+            input_feature_train_df['Message'] = input_feature_train_df['Message'].apply(self.transform_text)
+            input_feature_test_df['Message'] = input_feature_test_df['Message'].apply(self.transform_text)
+
+            input_feature_train_arr = input_feature_train_df['Message'].values
+            input_feature_test_arr = input_feature_test_df['Message'].values
+
+            # target encoder
+            train_arr = np.c_[target_feature_train_arr, input_feature_train_arr]
+            test_arr = np.c_[target_feature_test_arr, input_feature_test_arr]
+
+            # Save Numpy array
+            utils.save_numpy_array_data(file_path=self.data_transformation_config.transformed_train_path,
+                                        array=train_arr)
+            utils.save_numpy_array_data(file_path=self.data_transformation_config.transformed_test_path,
+                                        array=test_arr)
+
+            # Save objects
+            utils.save_object(file_path=self.data_transformation_config.target_encoder_path,
+                              obj=label_encoder)
+
+            data_transformation_artifact = artifact_entity.DataTransformationArtifact(
+                transformed_train_path=self.data_transformation_config.transformed_train_path,
+                transformed_test_path=self.data_transformation_config.transformed_test_path,
+                target_encoder_path=self.data_transformation_config.target_encoder_path
+            )
+
+            logging.info(f"Data Transformation Object {data_transformation_artifact}")
+            return data_transformation_artifact
 
         except Exception as e:
             raise SpamException(e, sys)

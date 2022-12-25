@@ -3,10 +3,15 @@ import pandas as pd
 from classifier.exception import SpamException
 from classifier.logger import logging
 from classifier.config import mongo_client
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
+import string
+import nltk
 import os
 import sys
 import yaml
 import dill
+porter_stemmer = PorterStemmer()
 
 
 def get_collection_as_df(database_name:str, collection_name:str) -> pd.DataFrame:
@@ -93,7 +98,26 @@ def load_numpy_array_data(file_path: str) -> np.array:
         raise SpamException(e, sys) from e
 
 
-def preprocessing_input_text():
-    pass
+def transform_text(self, text: str) -> str:
+    try:
+
+        text = text.lower()
+        text = nltk.word_tokenize(text)
+        corpus = []
+        for word in text:
+            if word.isalnum():
+                corpus.append(word)
+        text = corpus[:]
+        corpus.clear()
+        for word in text:
+            if word not in stopwords.words('english') and word not in string.punctuation:
+                corpus.append(word)
+        text = corpus[:]
+        corpus.clear()
+        for word in text:
+            corpus.append(porter_stemmer.stem(word))
+        return " ".join(corpus)
+    except Exception as e:
+        raise SpamException(e, sys)
 
 

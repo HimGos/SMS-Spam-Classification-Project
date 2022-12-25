@@ -18,14 +18,14 @@ class DataIngestion:
         except Exception as e:
             raise SpamException(e, sys)
 
-    def initiate_data_ingestion(self)-> artifact_entity.DataIngestionArtifact:
+    def initiate_data_ingestion(self) -> artifact_entity.DataIngestionArtifact:
 
         try:
             logging.info("Importing Collection data as pandas dataframe")
             # Importing collection as pandas dataframe
-            df:pd.DataFrame = utils.get_collection_as_df(
-                database_name = self.data_ingestion_config.database_name,
-                collection_name = self.data_ingestion_config.collection_name)
+            df: pd.DataFrame = utils.get_collection_as_df(
+                database_name=self.data_ingestion_config.database_name,
+                collection_name=self.data_ingestion_config.collection_name)
 
             logging.info("Save data in feature store")
 

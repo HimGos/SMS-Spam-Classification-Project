@@ -5,7 +5,6 @@ from classifier import utils
 from sklearn.preprocessing import LabelEncoder
 from classifier.config import TARGET_COLUMN
 from sklearn.feature_extraction.text import TfidfVectorizer
-from typing import Optional
 import pandas as pd
 import numpy as np
 import os, sys
@@ -54,46 +53,57 @@ class DataTransformation:
         try:
             # Reading train and test file
             logging.info("Reading train and test files")
-            train_df = pd.read_csv(self.data_ingestion_artifact.train_file_path)
-            test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
+            # train_df = pd.read_csv(self.data_ingestion_artifact.train_file_path)
+            # test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
+            df = pd.read_csv(self.data_ingestion_artifact.feature_store_file_path)
 
             # Selecting input feature for train and test df
             logging.info("Selecting input features in both dfs")
-            input_feature_train_df = train_df.drop(TARGET_COLUMN, axis=1)
-            input_feature_test_df = test_df.drop(TARGET_COLUMN, axis=1)
+            # input_feature_train_df = train_df.drop(TARGET_COLUMN, axis=1)
+            # input_feature_test_df = test_df.drop(TARGET_COLUMN, axis=1)
+            input_feature_df = df.drop(TARGET_COLUMN,axis=1)
 
             # Selecting target feature for train and test df
             logging.info("Selecting output feature in both dfs")
-            target_feature_train_df = train_df[TARGET_COLUMN]
-            target_feature_test_df = test_df[TARGET_COLUMN]
+            # target_feature_train_df = train_df[TARGET_COLUMN]
+            # target_feature_test_df = test_df[TARGET_COLUMN]
+            target_feature_df = df[TARGET_COLUMN]
 
             logging.info("Encoding...")
             label_encoder = LabelEncoder()
-            label_encoder.fit(target_feature_train_df)
+            # label_encoder.fit(target_feature_train_df)
+            label_encoder.fit(target_feature_df)
 
             # Transformation on target column
-            target_feature_train_arr = label_encoder.transform(target_feature_train_df)
-            target_feature_test_arr = label_encoder.transform(target_feature_test_df)
+            # target_feature_train_arr = label_encoder.transform(target_feature_train_df)
+            # target_feature_test_arr = label_encoder.transform(target_feature_test_df)
+            target_feature_arr = label_encoder.transform(target_feature_df)
 
             # Transformation on input column
-            input_feature_train_df['Message'] = input_feature_train_df['Message'].apply(self.transform_text)
-            input_feature_test_df['Message'] = input_feature_test_df['Message'].apply(self.transform_text)
+            logging.info("Transforming Text...")
+            # input_feature_train_df['Message'] = input_feature_train_df['Message'].apply(self.transform_text)
+            # input_feature_test_df['Message'] = input_feature_test_df['Message'].apply(self.transform_text)
+            input_feature_df['Message'] = input_feature_df['Message'].apply(self.transform_text)
 
             # Vectorizing input columns
             logging.info("Vectorizing...")
             tfidf = TfidfVectorizer(max_features=3000)
-            input_feature_train_arr = tfidf.fit_transform(input_feature_train_df['Message']).toarray()
-            input_feature_test_arr = tfidf.fit_transform(input_feature_test_df['Message']).toarray()
+            # input_feature_train_arr = tfidf.fit_transform(input_feature_train_df['Message']).toarray()
+            # input_feature_test_arr = tfidf.fit_transform(input_feature_test_df['Message']).toarray()
+            input_feature_arr = tfidf.fit_transform(input_feature_df['Message']).toarray()
 
             # target encoder
-            train_arr = np.c_[input_feature_train_arr, target_feature_train_arr]
-            test_arr = np.c_[input_feature_test_arr, target_feature_test_arr]
+            # train_arr = np.c_[input_feature_train_arr, target_feature_train_arr]
+            # test_arr = np.c_[input_feature_test_arr, target_feature_test_arr]
+            transformed_arr = np.c_[input_feature_arr, target_feature_arr]
 
             # Save Numpy array
-            utils.save_numpy_array_data(file_path=self.data_transformation_config.transformed_train_path,
-                                        array=train_arr)
-            utils.save_numpy_array_data(file_path=self.data_transformation_config.transformed_test_path,
-                                        array=test_arr)
+            # utils.save_numpy_array_data(file_path=self.data_transformation_config.transformed_train_path,
+            #                             array=train_arr)
+            # utils.save_numpy_array_data(file_path=self.data_transformation_config.transformed_test_path,
+            #                             array=test_arr)
+            utils.save_numpy_array_data(file_path=self.data_transformation_config.transformed_file_path,
+                                        array=transformed_arr)
 
             # Save objects
             utils.save_object(file_path=self.data_transformation_config.target_encoder_path,
@@ -103,9 +113,8 @@ class DataTransformation:
 
             data_transformation_artifact = artifact_entity.DataTransformationArtifact(
                 transform_object_path=self.data_transformation_config.transform_object_path,
-                transformed_train_path=self.data_transformation_config.transformed_train_path,
-                transformed_test_path=self.data_transformation_config.transformed_test_path,
-                target_encoder_path=self.data_transformation_config.target_encoder_path
+                target_encoder_path=self.data_transformation_config.target_encoder_path,
+                transformed_file_path=self.data_transformation_config.transformed_file_path
             )
 
             logging.info(f"Data Transformation Object {data_transformation_artifact}")

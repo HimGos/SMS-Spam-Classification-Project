@@ -6,6 +6,7 @@ import os, sys
 FILE_NAME = "spam_classifier.csv"
 TRAIN_FILE_NAME = "train.csv"
 TEST_FILE_NAME = "test.csv"
+TRANSFORMED_FILE_NAME = "transformed_file.csv"
 TRANSFORMER_OBJECT_FILE_NAME = "transformer.pkl"
 TARGET_ENCODER_OBJECT_FILE_NAME = "target_encoder.pkl"
 MODEL_FILE_NAME = "model.pkl"
@@ -54,12 +55,21 @@ class DataTransformationConfig:
     def __init__(self, training_pipeline_config: TrainingPipelineConfig):
         self.data_transformation_dir = os.path.join(training_pipeline_config.artifact_dir, "data_transformation")
         self.transform_object_path = os.path.join(self.data_transformation_dir, "transformer", TRANSFORMER_OBJECT_FILE_NAME)
-        self.transformed_train_path = os.path.join(self.data_transformation_dir, "transformed", TRAIN_FILE_NAME.replace("csv", "npz"))
-        self.transformed_test_path = os.path.join(self.data_transformation_dir, "transformed", TEST_FILE_NAME.replace("csv", "npz"))
+        # self.transformed_train_path = os.path.join(self.data_transformation_dir, "transformed", TRAIN_FILE_NAME.replace("csv", "npz"))
+        # self.transformed_test_path = os.path.join(self.data_transformation_dir, "transformed", TEST_FILE_NAME.replace("csv", "npz"))
+        self.transformed_file_path = os.path.join(self.data_transformation_dir, "transformed_arrays", TRANSFORMED_FILE_NAME.replace("csv", "npz"))
         self.target_encoder_path = os.path.join(self.data_transformation_dir, "target_encoder", TARGET_ENCODER_OBJECT_FILE_NAME)
 
 
-class ModelTrainerConfig: ...
+
+class ModelTrainerConfig:
+
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig):
+        self.model_trainer_dir = os.path.join(training_pipeline_config.artifact_dir, "model_trainer")
+        self.model_path = os.path.join(self.model_trainer_dir, "model", MODEL_FILE_NAME)
+        self.overfitting_threshold = 0.1
+        self.expected_score = 0.8
+
 
 
 class ModelEvaluationConfig: ...

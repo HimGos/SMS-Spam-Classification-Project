@@ -4,6 +4,7 @@ from classifier.logger import logging
 from classifier import utils
 from sklearn.preprocessing import LabelEncoder
 from classifier.config import TARGET_COLUMN
+from sklearn.feature_extraction.text import TfidfVectorizer
 from typing import Optional
 import pandas as pd
 import numpy as np
@@ -78,12 +79,15 @@ class DataTransformation:
             input_feature_train_df['Message'] = input_feature_train_df['Message'].apply(self.transform_text)
             input_feature_test_df['Message'] = input_feature_test_df['Message'].apply(self.transform_text)
 
-            input_feature_train_arr = input_feature_train_df['Message'].values
-            input_feature_test_arr = input_feature_test_df['Message'].values
+            # Vectorizing input columns
+            logging.info("Vectorizing...")
+            tfidf = TfidfVectorizer(max_features=3000)
+            input_feature_train_arr = tfidf.fit_transform(input_feature_train_df['Message']).toarray()
+            input_feature_test_arr = tfidf.fit_transform(input_feature_test_df['Message']).toarray()
 
             # target encoder
-            train_arr = np.c_[target_feature_train_arr, input_feature_train_arr]
-            test_arr = np.c_[target_feature_test_arr, input_feature_test_arr]
+            train_arr = np.c_[input_feature_train_arr, target_feature_train_arr]
+            test_arr = np.c_[input_feature_test_arr, target_feature_test_arr]
 
             # Save Numpy array
             utils.save_numpy_array_data(file_path=self.data_transformation_config.transformed_train_path,
@@ -94,8 +98,11 @@ class DataTransformation:
             # Save objects
             utils.save_object(file_path=self.data_transformation_config.target_encoder_path,
                               obj=label_encoder)
+            utils.save_object(file_path=self.data_transformation_config.transform_object_path,
+                              obj=tfidf)
 
             data_transformation_artifact = artifact_entity.DataTransformationArtifact(
+                transform_object_path=self.data_transformation_config.transform_object_path,
                 transformed_train_path=self.data_transformation_config.transformed_train_path,
                 transformed_test_path=self.data_transformation_config.transformed_test_path,
                 target_encoder_path=self.data_transformation_config.target_encoder_path

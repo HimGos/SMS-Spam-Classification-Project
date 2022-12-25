@@ -5,6 +5,7 @@ from classifier.components.data_ingestion import DataIngestion
 from classifier.components.data_validation import DataValidation
 from classifier.components.data_transformation import DataTransformation
 from classifier.components.model_trainer import ModelTrainer
+from classifier.components.model_evaluation import ModelEvaluation
 
 
 
@@ -37,3 +38,10 @@ if __name__ == "__main__":
                                  data_transformation_artifact=data_transformation_artifact)
     model_trainer_artifact = model_trainer.initiate_model_trainer()
 
+    # Model Evaluation
+    model_eval_config = config_entity.ModelEvaluationConfig(training_pipeline_config=training_pipeline_config)
+    model_eval = ModelEvaluation(model_eval_config=model_eval_config,
+                                 data_ingestion_artifact=data_ingestion_artifact,
+                                 data_transformation_artifact=data_transformation_artifact,
+                                 model_trainer_artifact=model_trainer_artifact)
+    model_eval_artifact = model_eval.initiate_model_evaluation()

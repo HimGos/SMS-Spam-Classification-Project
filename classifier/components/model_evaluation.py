@@ -58,6 +58,34 @@ class ModelEvaluation:
             current_model = load_object(file_path=self.model_trainer_artifact.model_path)
             current_target_encoder = load_object(file_path=self.data_transformation_artifact.target_encoder_path)
 
+            test_df = pd.read_csv(self.data_ingestion_artifact.feature_store_file_path)
+            target_df = test_df[TARGET_COLUMN]
+            # Accuracy using previous trained model
+            y_true = target_encoder.transform(target_df)
+            input_df = test_df.drop('Label', axis=1)
+            input_df['Message'] = input_df['Message'].apply(transform_text)
+            input_arr = transformer.transform(input_df['Message']).toarray()
+            y_pred = model.predict(input_arr)
+            previous_model_score = accuracy_score(y_true=y_true, y_pred=y_pred)
+            logging.info(f"Accuracy using previous model: {previous_model_score}")
 
+            # Accuracy using Current Trained Model
+            y_true = current_target_encoder.transform(target_df)
+            input_df = test_df.drop('Label', axis=1)
+            input_df['Message'] = input_df['Message'].apply(transform_text)
+            input_arr = current_transformer.transform(input_df['Message']).toarray()
+            y_pred = current_model.predict(input_arr)
+            current_model_score = accuracy_score(y_true=y_true, y_pred=y_pred)
+            logging.info(f"Accuracy using Current model: {current_model_score}")
+
+            # Comparing Models
+            if current_model_score <= previous_model_score:
+                logging.info(f"Current Trained model is not better than previous model")
+                raise Exception(f"Current Trained model is not better than previous model")
+
+            model_eval_artifact = artifact_entity.ModelEvaluationArtifact(is_model_accepted=True,
+                                          improved_accuracy=current_model_score-previous_model_score)
+            logging.info(f"Model evaluation artifact: {model_eval_artifact}")
+            return model_eval_artifact
         except Exception as e:
             raise SpamException(e, sys)

@@ -3,7 +3,7 @@ from classifier.logger import logging
 from classifier.exception import SpamException
 from classifier import utils
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, precision_score
 import sys
 from sklearn.model_selection import train_test_split
 
@@ -55,6 +55,8 @@ class ModelTrainer:
             logging.info(f"Calculating Accuracy Test Score")
             yhat_test = model.predict(X_test)
             accuracy_test_score = accuracy_score(y_true=y_test, y_pred=yhat_test)
+            precision_test_score = precision_score(y_true=y_test, y_pred=yhat_test)
+            logging.info(f"Precision Score: {precision_test_score}")
 
             logging.info(f"Train Score: {accuracy_train_score} and Test Score: {accuracy_test_score}")
             if accuracy_test_score < self.model_trainer_config.expected_score:

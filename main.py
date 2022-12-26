@@ -1,55 +1,52 @@
-from classifier.exception import SpamException
-from classifier.entity import config_entity
-from classifier.entity import artifact_entity
-from classifier.components.data_ingestion import DataIngestion
-from classifier.components.data_validation import DataValidation
-from classifier.components.data_transformation import DataTransformation
-from classifier.components.model_trainer import ModelTrainer
-from classifier.components.model_evaluation import ModelEvaluation
-from classifier.components.model_pusher import ModelPusher
-
+from classifier.pipeline.training_pipeline import start_training_pipeline
+from classifier.utils import transform_text
+from classifier.predictor import ModelResolver
+from classifier.utils import load_object
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score,confusion_matrix
+from classifier.logger import logging
+import dill
+import os, sys
+import pandas as pd
 
 
 if __name__ == "__main__":
 
-    # Training Pipeline Config
-    training_pipeline_config = config_entity.TrainingPipelineConfig()
+    # start_training_pipeline()
 
-    # Data Ingestion
-    data_ingestion_config = config_entity.DataIngestionConfig(training_pipeline_config=training_pipeline_config)
-    print(data_ingestion_config.to_dict())
-    data_ingestion = DataIngestion(data_ingestion_config=data_ingestion_config)
-    data_ingestion_artifact = data_ingestion.initiate_data_ingestion()
+    df = pd.read_csv("SMSSpamCollection.csv", sep='\t', names=['Label', 'Message'])
 
-    # Data Validation
-    data_validation_config = config_entity.DataValidationConfig(training_pipeline_config=training_pipeline_config)
-    data_validation = DataValidation(data_validation_config=data_validation_config,
-                                     data_ingestion_artifact=data_ingestion_artifact)
-    data_validation_artifact = data_validation.initiate_data_validation()
+    model_resolver = ModelResolver(model_registry="saved_models")
+    transformer = load_object(file_path=model_resolver.get_latest_transformer_path())
+    model = load_object(file_path=model_resolver.get_latest_model_path())
+    target_encoder = load_object(file_path=model_resolver.get_latest_target_encoder_path())
+    print(model_resolver.get_latest_target_encoder_path())
+    print(type(target_encoder))
 
-    # Data Transformation
-    data_transformation_config = config_entity.DataTransformationConfig(training_pipeline_config=training_pipeline_config)
-    data_transformation = DataTransformation(data_transformation_config=data_transformation_config,
-                                             data_ingestion_artifact=data_ingestion_artifact)
-    data_transformation_artifact = data_transformation.initiate_data_transformation()
+    # with open(r"artifact/12262022__123250/model_pusher/saved_models/transformer.pkl", "rb") as file:
+    #     transformer = dill.load(file)
+    #
+    # with open(r"artifact/12262022__114130/data_transformation/target_encoder/target_encoder.pkl", "rb") as file:
+    #     target_encoder = dill.load(file)
+    #
+    # with open(r"artifact/12262022__114130/model_trainer/model/model.pkl", "rb") as file:
+    #     model = dill.load(file)
+    # print(type(model))
+    # print(type(transformer))
 
-    # Model Trainer
-    model_trainer_config = config_entity.ModelTrainerConfig(training_pipeline_config=training_pipeline_config)
-    model_trainer = ModelTrainer(model_trainer_config=model_trainer_config,
-                                 data_transformation_artifact=data_transformation_artifact)
-    model_trainer_artifact = model_trainer.initiate_model_trainer()
+    input_df = df.drop('Label', axis=1)
+    input_df['Message'] = input_df['Message'].apply(transform_text)
+    input_df_arr = transformer.transform(input_df['Message']).toarray()
 
-    # Model Evaluation
-    model_eval_config = config_entity.ModelEvaluationConfig(training_pipeline_config=training_pipeline_config)
-    model_eval = ModelEvaluation(model_eval_config=model_eval_config,
-                                 data_ingestion_artifact=data_ingestion_artifact,
-                                 data_transformation_artifact=data_transformation_artifact,
-                                 model_trainer_artifact=model_trainer_artifact)
-    model_eval_artifact = model_eval.initiate_model_evaluation()
+    target_df = df['Label']
+    target_df_arr = target_encoder.transform(target_df)
 
-    # Model Pusher
-    model_pusher_config = config_entity.ModelPusherConfig(training_pipeline_config=training_pipeline_config)
-    model_pusher = ModelPusher(model_pusher_config=model_pusher_config,
-                               data_transformation_artifact=data_transformation_artifact,
-                               model_trainer_artifact=model_trainer_artifact)
-    model_pusher_artifact = model_pusher.initiate_model_pusher()
+    X_train, X_test, y_train, y_test = train_test_split(input_df_arr, target_df_arr,
+                                                        random_state=42, test_size=0.2)
+
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    confusion = confusion_matrix(y_test, y_pred)
+    logging.info(f"Accuracy: {accuracy}, Precision: {precision}")
+    logging.info(f"Confusion matrix: {confusion}")

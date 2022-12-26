@@ -4,7 +4,7 @@ from classifier.exception import SpamException
 from classifier.predictor import ModelResolver
 from classifier.utils import load_object
 from classifier.utils import transform_text
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score
 from classifier.config import TARGET_COLUMN
 import pandas as pd
 import os, sys
@@ -33,7 +33,7 @@ class ModelEvaluation:
             # which model folder is best trained
             logging.info("If saved model folder has model then we will compare"
                          " which model folder is best trained")
-            latest_dir_path = self.model_resolver.get_latest_dir_path()
+            latest_dir_path = None  #self.model_resolver.get_latest_dir_path()
             if latest_dir_path is None:
                 model_eval_artifact = artifact_entity.ModelEvaluationArtifact(
                     is_model_accepted=True, improved_accuracy=None)
@@ -66,8 +66,8 @@ class ModelEvaluation:
             input_df['Message'] = input_df['Message'].apply(transform_text)
             input_arr = transformer.transform(input_df['Message']).toarray()
             y_pred = model.predict(input_arr)
-            previous_model_score = accuracy_score(y_true=y_true, y_pred=y_pred)
-            logging.info(f"Accuracy using previous model: {previous_model_score}")
+            previous_model_score = precision_score(y_true=y_true, y_pred=y_pred)
+            logging.info(f"Precision Score using previous model: {previous_model_score}")
 
             # Accuracy using Current Trained Model
             y_true = current_target_encoder.transform(target_df)
@@ -75,8 +75,8 @@ class ModelEvaluation:
             input_df['Message'] = input_df['Message'].apply(transform_text)
             input_arr = current_transformer.transform(input_df['Message']).toarray()
             y_pred = current_model.predict(input_arr)
-            current_model_score = accuracy_score(y_true=y_true, y_pred=y_pred)
-            logging.info(f"Accuracy using Current model: {current_model_score}")
+            current_model_score = precision_score(y_true=y_true, y_pred=y_pred)
+            logging.info(f"Precision Score using Current model: {current_model_score}")
 
             # Comparing Models
             if current_model_score <= previous_model_score:

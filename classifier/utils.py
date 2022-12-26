@@ -48,7 +48,7 @@ def write_yaml_file(file_path, data: dict):
         raise SpamException(e, sys)
 
 
-def save_object(file_path: str, obj: object) -> None:
+def save_object(file_path: str, obj: object) :
     try:
         logging.info("Entered the save_object method of utils")
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
@@ -64,7 +64,7 @@ def load_object(file_path: str) -> object:
         if not os.path.exists(file_path):
             raise Exception(f"The file: {file_path} doesn't exist")
         with open(file_path, "rb") as file_obj:
-            dill.load(file_obj)
+            return dill.load(file_obj)
     except Exception as e:
         raise SpamException(e, sys)
 
@@ -98,7 +98,7 @@ def load_numpy_array_data(file_path: str) -> np.array:
         raise SpamException(e, sys) from e
 
 
-def transform_text(self, text: str) -> str:
+def transform_text(text: str) -> str:
     try:
 
         text = text.lower()

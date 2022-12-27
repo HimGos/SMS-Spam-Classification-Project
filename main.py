@@ -2,6 +2,7 @@ from classifier.pipeline.training_pipeline import start_training_pipeline
 from classifier.utils import transform_text
 from classifier.predictor import ModelResolver
 from classifier.utils import load_object
+from PIL import Image
 import streamlit as st
 
 
@@ -14,7 +15,8 @@ if __name__ == "__main__":
     model = load_object(file_path=model_resolver.get_latest_model_path())
 
     st.set_page_config(page_title="Spam Classifier")
-    st.title("Email/SMS Spam Classifier")
+    st.title("Spam Classifier")
+    st.write("by - [Himanshu Goswami](https://github.com/HimGos)")
 
     # Taking Input Message
     input_sms = st.text_area("Enter the message...")
@@ -29,9 +31,11 @@ if __name__ == "__main__":
         result = model.predict(vector_sms)[0]
 
         if result == 1:
-            st.header("Spam")
+            image = Image.open('.streamlit/spam bg removed.jpg')
+            st.image(image)
         else:
-            st.header("Not Spam")
+            image = Image.open('.streamlit/Not spam bg removed.jpg')
+            st.image(image)
 
     # UI Customization
     st.markdown(""" <style>

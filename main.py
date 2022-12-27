@@ -31,10 +31,10 @@ if __name__ == "__main__":
         result = model.predict(vector_sms)[0]
 
         if result == 1:
-            image = Image.open('.streamlit/spam bg removed.jpg')
+            image = Image.open('.streamlit/Spam HD - bg removed.jpg')
             st.image(image)
         else:
-            image = Image.open('.streamlit/Not spam bg removed.jpg')
+            image = Image.open('.streamlit/Not Spam HD - bg removed.jpg')
             st.image(image)
 
     # UI Customization

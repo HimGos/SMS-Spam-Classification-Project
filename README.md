@@ -53,13 +53,11 @@ Just like in Demo Preview, you will be able to see a text box area and a button.
 # Development
 [(Back to top)](#table-of-contents)
 
-<!-- This is the place where you give instructions to developers on how to modify the code.
-
-You could give **instructions in depth** of **how the code works** and how everything is put together.
-
-You could also give specific instructions to how they can setup their development environment.
-
-Ideally, you should keep the README simple. If you need to add more complex explanations, use a wiki. Check out [this wiki](https://github.com/navendu-pottekkat/nsfw-filter/wiki) for inspiration. -->
+Follow these documents for a complete explanation of the project:
+- [High Level Design Document](https://drive.google.com/file/d/1oNVsVL3xKX-7pcOl8CVBEz4YNokzy3ev/view?usp=share_link)
+- [Low Level Design Document](https://drive.google.com/file/d/1Twpt6QuOvo--9UPQSoKVHRYjAzdgxQOf/view?usp=share_link)
+- [Architecture](https://drive.google.com/file/d/10w_AXQDvUWdwMYCC7cTcz0Q2BCMMBqgu/view?usp=share_link)
+- [Detailed Project Report](https://docs.google.com/presentation/d/1ykgO569JsQUJ-CYFHgGsEGQtQ8XHD5vc/edit?usp=share_link&ouid=105387606152766816452&rtpof=true&sd=true)
 
 # Contribute
 [(Back to top)](#table-of-contents)

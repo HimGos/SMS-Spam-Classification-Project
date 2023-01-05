@@ -69,11 +69,7 @@ To contribute or support the project, please contact on this email : himgos@gmai
 
 [GNU General Public License version 3](https://opensource.org/licenses/GPL-3.0)
 
-# Footer
+# Support
 [(Back to top)](#table-of-contents)
 
 Leave a star in GitHub, share the repo and share this guide if you found this helpful.
-
-<!-- Add the footer here -->
-
-<!-- ![Footer](https://github.com/navendu-pottekkat/awesome-readme/blob/master/fooooooter.png) -->

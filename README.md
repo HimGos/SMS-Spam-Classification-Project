@@ -18,7 +18,7 @@ The Spam Ham Classifier is a machine learning based text reading model which wil
 
 <!-- Add a demo for your project -->
 
-![Random GIF](https://media.giphy.com/media/ZVik7pBtu9dNS/giphy.gif) 
+![Random GIF](https://github.com/HimGos/SMS-Spam-Classification-Project/blob/master/demo-gif.gif) 
 
 # Table of contents
 
@@ -30,7 +30,7 @@ The Spam Ham Classifier is a machine learning based text reading model which wil
 - [Development](#development)
 - [Contribute](#contribute)
 - [License](#license)
-- [Footer](#footer)
+- [Support](#support)
 
 # Installation
 [(Back to top)](#table-of-contents)

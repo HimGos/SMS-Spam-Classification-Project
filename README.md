@@ -2,37 +2,28 @@
 ![Banner](https://github.com/HimGos/SMS-Spam-Classification-Project/blob/master/spam.png)
 
 # Spam Ham Classifier
-![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/navendu-pottekkat/awesome-readme?include_prereleases)
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://himgos-sms-spam-classification-project-main-3o5ul5.streamlit.app/)
-![GitHub last commit](https://img.shields.io/github/last-commit/HimGos/SMS-Spam-Classification-Project)
-![GitHub](https://img.shields.io/github/license/navendu-pottekkat/awesome-readme)
+
 
 <!-- Add buttons here -->
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://himgos-sms-spam-classification-project-main-3o5ul5.streamlit.app/)
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/navendu-pottekkat/awesome-readme?include_prereleases)
+![GitHub last commit](https://img.shields.io/github/last-commit/HimGos/SMS-Spam-Classification-Project)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 <!-- Describe your project in brief -->
-The Spam Ham Classifier is a machine learning based text reading model which will help us in detecting and filtering spam emails/SMS.
+The Spam Ham Classifier is a machine learning based text reading model which will help us in detecting and filtering spam emails/SMS. This web app takes text input from the user and predicts whether the given text is a Spam or Ham (Not Spam).
 
 
-
-
-# Demo-Preview
+# Project Demo Preview
 
 <!-- Add a demo for your project -->
 
-<!-- After you have written about your project, it is a good idea to have a demo/preview(**video/gif/screenshots** are good options) of your project so that people can know what to expect in your project. You could also add the demo in the previous section with the product description.
-
-Here is a random GIF as a placeholder.
-
-![Random GIF](https://media.giphy.com/media/ZVik7pBtu9dNS/giphy.gif) -->
+![Random GIF](https://media.giphy.com/media/ZVik7pBtu9dNS/giphy.gif) 
 
 # Table of contents
 
-<!-- After you have introduced your project, it is a good idea to add a **Table of contents** or **TOC** as **cool** people say it. This would make it easier for people to navigate through your README and find exactly what they are looking for.
-
-Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README. -->
-
-- [Project Title](#project-title)
-- [Demo-Preview](#demo-preview)
+- [Project Title](#spam-ham-classifier)
+- [Demo-Preview](#project-demo-preview)
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -46,28 +37,18 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 # Installation
 [(Back to top)](#table-of-contents)
 
-<!-- *You might have noticed the **Back to top** button(if not, please notice, it's right there!). This is a good idea because it makes your README **easy to navigate.*** 
-
-The first one should be how to install(how to generally use your project or set-up for editing in their machine).
-
-This should give the users a concrete idea with instructions on how they can use your project repo with all the steps.
-
-Following this steps, **they should be able to run this in their device.**
-
-A method I use is after completing the README, I go through the instructions from scratch and check if it is working. -->
-
-<!-- Here is a sample instruction:
-
 To use this project, first clone the repo on your device using the command below:
 
 ```git init```
 
-```git clone https://github.com/navendu-pottekkat/nsfw-filter.git``` -->
+```git clone https://github.com/HimGos/SMS-Spam-Classification-Project.git``` 
 
 # Usage
 [(Back to top)](#table-of-contents)
 
-<!-- This is optional and it is used to give the user info on how to use the project after installation. This could be added in the Installation section also. -->
+Using this project is very easy, simply click on this web app link : [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://himgos-sms-spam-classification-project-main-3o5ul5.streamlit.app/)
+
+Just like in Demo Preview, you will be able to see a text box area and a button. Type your text and click on **Predict** button to get the result.
 
 # Development
 [(Back to top)](#table-of-contents)
